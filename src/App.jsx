@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo';
+import NavigationDrawer from 'react-md/lib/NavigationDrawers';
+import AddToDo from './components/add_todo';
+import Todos from './components/todos';
+import ActionTodos from './components/action_todos';
 
-import logo from './logo.svg';
 import './App.css';
 
 const networkInterface = createNetworkInterface({
@@ -17,15 +20,13 @@ class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
-        <div className="App">
-          <div className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h2>Welcome to React</h2>
+        <NavigationDrawer toolbarTitle="KeetHealth Test" includeDrawerHeader={false} defaultVisible={false}>
+          <div className="md-grid">
+            <ActionTodos />
+            <AddToDo />
+            <Todos />
           </div>
-          <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
-          </p>
-        </div>
+        </NavigationDrawer>
       </ApolloProvider>
     );
   }

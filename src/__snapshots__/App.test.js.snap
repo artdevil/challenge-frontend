@@ -30,35 +30,55 @@ exports[`shallow renders without crashing 1`] = `
       "resetStore": [Function],
       "setStore": [Function],
       "ssrMode": false,
-      "version": "1.9.2",
+      "version": "1.9.3",
       "watchQuery": [Function],
     }
   }
 >
-  <div
-    className="App"
+  <NavigationDrawer
+    autoclose={true}
+    constantDrawerType={false}
+    contentComponent="main"
+    contentId="main-content"
+    defaultMedia="mobile"
+    defaultVisible={false}
+    desktopDrawerType="full-height"
+    desktopMinWidth={1025}
+    drawerTransitionDuration={300}
+    extractMini={true}
+    includeDrawerHeader={false}
+    jumpLabel="Jump to content"
+    mobileDrawerType="temporary"
+    mobileMinWidth={320}
+    persistentIcon={
+      <FontIcon
+        iconClassName="material-icons"
+      >
+        arrow_back
+      </FontIcon>
+    }
+    position="left"
+    tabletDrawerType="persistent"
+    tabletMinWidth={768}
+    temporaryIcon={
+      <FontIcon
+        iconClassName="material-icons"
+      >
+        menu
+      </FontIcon>
+    }
+    toolbarThemeType="colored"
+    toolbarTitle="KeetHealth Test"
+    transitionEnterTimeout={300}
+    transitionName="md-cross-fade"
   >
     <div
-      className="App-header"
+      className="md-grid"
     >
-      <img
-        alt="logo"
-        className="App-logo"
-        src="logo.svg"
-      />
-      <h2>
-        Welcome to React
-      </h2>
+      <Apollo(Apollo(ActionTodos)) />
+      <Apollo(AddTodo) />
+      <Apollo(Apollo(Apollo(Todos))) />
     </div>
-    <p
-      className="App-intro"
-    >
-      To get started, edit 
-      <code>
-        src/App.js
-      </code>
-       and save to reload.
-    </p>
-  </div>
+  </NavigationDrawer>
 </ApolloProvider>
 `;
