@@ -12,7 +12,6 @@ class Todos extends Component {
   static propTypes = {
     fetchData: PropTypes.object.isRequired,
     toggleTodo: PropTypes.func.isRequired,
-    triggerShowModal: PropTypes.func.isRequired,
     destroyTodo: PropTypes.func.isRequired,
   }
 
