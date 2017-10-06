@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Button from 'react-md/lib/Buttons/Button';
 import DialogContainer from 'react-md/lib/Dialogs';
 import TextField from 'react-md/lib/TextFields';
+import _ from 'lodash';
+import { TodosListQuery } from './todos';
 
 class SimpleModal extends Component {
   static propTypes = {
@@ -93,6 +95,17 @@ const editTodo = graphql(EditTodoMutation, {
             completed: obj.completed,
             __typename: 'Todo',
           },
+        },
+        update: (store, { data: { save } }) => {
+          // Read the data from the cache for this query.
+          const data = store.readQuery({ query: TodosListQuery });
+          // Add our channel from the mutation to the end.
+          const index = _.findIndex(data.todos, { id: save.id });
+          const dataSelect = data.todos[index];
+          dataSelect.title = save.title;
+          data.todos.splice(index, 1, dataSelect);
+          // Write the data back to the cache.
+          store.writeQuery({ query: TodosListQuery, data });
         },
       });
     },

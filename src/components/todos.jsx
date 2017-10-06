@@ -5,6 +5,7 @@ import { Card } from 'react-md/lib/Cards';
 import { List, ListItemControl } from 'react-md/lib/Lists';
 import Checkbox from 'react-md/lib/SelectionControls/Checkbox';
 import FontIcon from 'react-md/lib/FontIcons';
+import _ from 'lodash';
 import Modal from './edit_todo';
 
 class Todos extends Component {
@@ -105,7 +106,7 @@ const DestroyTodoMutation = gql`
 `;
 
 const withTodos = graphql(TodosListQuery, {
-  options: { pollInterval: 500 },
+  options: { pollInterval: 5000 },
   props: ({ data }) => ({
     fetchData: data || {},
   }),
@@ -120,9 +121,21 @@ const withToggleTodo = graphql(ToggleTodoMutation, {
           toggle: {
             title: evt.title,
             id: evt.id,
-            completed: evt.completed,
+            completed: !evt.completed,
             __typename: 'Todo',
           },
+        },
+        update: (store, { data: { toggle } }) => {
+          // Read the data from the cache for this query.
+          const data = store.readQuery({ query: TodosListQuery });
+          // Add our channel from the mutation to the end.
+          const index = _.findIndex(data.todos, { id: toggle.id });
+          const dataSelect = data.todos[index];
+          dataSelect.title = toggle.title;
+          dataSelect.completed = toggle.completed;
+          data.todos.splice(index, 1, dataSelect);
+          // Write the data back to the cache.
+          store.writeQuery({ query: TodosListQuery, data });
         },
       });
     },
@@ -139,6 +152,15 @@ const withDestroyTodo = graphql(DestroyTodoMutation, {
             id: evt.id,
             __typename: 'Todo',
           },
+        },
+        update: (store, { data: { destroy } }) => {
+          // Read the data from the cache for this query.
+          const data = store.readQuery({ query: TodosListQuery });
+          // Add our channel from the mutation to the end.
+          const index = _.findIndex(data.todos, { id: destroy.id });
+          data.todos.splice(index, 1);
+          // Write the data back to the cache.
+          store.writeQuery({ query: TodosListQuery, data });
         },
       });
     },

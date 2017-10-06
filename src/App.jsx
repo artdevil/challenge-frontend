@@ -22,7 +22,7 @@ class App extends Component {
       <ApolloProvider client={client}>
         <NavigationDrawer toolbarTitle="KeetHealth Test" includeDrawerHeader={false} defaultVisible={false}>
           <div className="md-grid">
-            <ActionTodos />
+            <ActionTodos client={client} />
             <AddToDo />
             <Todos />
           </div>
