@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<EditTodo /> shallow edit_todo renders without crashing 1`] = `
+<SimpleModal
+  editTodo={[Function]}
+  hideModal={[Function]}
+  showModal={false}
+  showModalObj={Object {}}
+/>
+`;

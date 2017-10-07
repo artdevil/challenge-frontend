@@ -30,7 +30,7 @@ exports[`shallow renders without crashing 1`] = `
       "resetStore": [Function],
       "setStore": [Function],
       "ssrMode": false,
-      "version": "1.9.3",
+      "version": "1.9.2",
       "watchQuery": [Function],
     }
   }
@@ -75,7 +75,40 @@ exports[`shallow renders without crashing 1`] = `
     <div
       className="md-grid"
     >
-      <Apollo(Apollo(ActionTodos)) />
+      <Apollo(Apollo(ActionTodos))
+        client={
+          ApolloClient {
+            "addTypename": true,
+            "dataId": [Function],
+            "dataIdFromObject": [Function],
+            "disableNetworkFetches": false,
+            "fieldWithArgs": [Function],
+            "fragmentMatcher": HeuristicFragmentMatcher {},
+            "initialState": Object {},
+            "middleware": [Function],
+            "mutate": [Function],
+            "networkInterface": HTTPFetchNetworkInterface {
+              "_afterwares": Array [],
+              "_middlewares": Array [],
+              "_opts": Object {},
+              "_uri": "http://localhost:8080",
+            },
+            "query": [Function],
+            "queryDeduplication": true,
+            "reducerConfig": Object {
+              "addTypename": true,
+              "customResolvers": undefined,
+              "dataIdFromObject": [Function],
+              "fragmentMatcher": [Function],
+            },
+            "resetStore": [Function],
+            "setStore": [Function],
+            "ssrMode": false,
+            "version": "1.9.2",
+            "watchQuery": [Function],
+          }
+        }
+      />
       <Apollo(AddTodo) />
       <Apollo(Apollo(Apollo(Todos))) />
     </div>
