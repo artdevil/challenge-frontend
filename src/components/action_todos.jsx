@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { gql, graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import PropTypes from 'prop-types';
 import MenuButton from 'react-md/lib/Menus/MenuButton';
 import ListItem from 'react-md/lib/Lists/ListItem';
 import _ from 'lodash';
-import { TodosListQuery } from './todos';
+import queries from '../queries/todos';
+import mutations from '../mutations/todos';
 
 class ActionTodos extends Component {
   static propTypes = {
@@ -13,7 +14,7 @@ class ActionTodos extends Component {
   }
 
   handleAction = (e) => {
-    const { todos } = this.props.client.readQuery({ query: TodosListQuery });
+    const { todos } = this.props.client.readQuery({ query: queries.TodosListQuery });
     if (e === 'CLEAR_ALL') {
       this.props.clearCompleted(todos);
     } else if (e === 'MARK_ALL_DONE') {
@@ -45,27 +46,7 @@ class ActionTodos extends Component {
   }
 }
 
-const ClearAllMutation = gql`
-  mutation clearCompleted {
-    clearCompleted {
-      id
-      title
-      completed
-    }
-  }
-`;
-
-const ToggleAllTodoMutation = gql`
-  mutation toggleAll($checked: Boolean!) {
-    toggleAll(checked: $checked) {
-      id
-      title
-      completed
-    }
-  }
-`;
-
-const withClearCompleted = graphql(ClearAllMutation, {
+const withClearCompleted = graphql(mutations.ClearAllMutation, {
   props: ({ mutate }) => ({
     clearCompleted: (todos) => {
       mutate({
@@ -75,18 +56,18 @@ const withClearCompleted = graphql(ClearAllMutation, {
         },
         update: (store) => {
           // Read the data from the cache for this query.
-          const data = store.readQuery({ query: TodosListQuery });
+          const data = store.readQuery({ query: queries.TodosListQuery });
           // Add our channel from the mutation to the end.
           const dataPickBy = _.filter(data.todos, todo => todo.completed === false);
           // Write the data back to the cache.
-          store.writeQuery({ query: TodosListQuery, data: { todos: dataPickBy } });
+          store.writeQuery({ query: queries.TodosListQuery, data: { todos: dataPickBy } });
         },
       });
     },
   }),
 });
 
-const withToggleAllTodo = graphql(ToggleAllTodoMutation, {
+const withToggleAllTodo = graphql(mutations.ToggleAllTodoMutation, {
   props: ({ mutate }) => ({
     toggleAll: (evt, todos) => {
       mutate({
@@ -96,13 +77,13 @@ const withToggleAllTodo = graphql(ToggleAllTodoMutation, {
         },
         update: (store) => {
           // Read the data from the cache for this query.
-          const data = store.readQuery({ query: TodosListQuery });
+          const data = store.readQuery({ query: queries.TodosListQuery });
           // Add our channel from the mutation to the end.
           data.todos.map((todo) => {
             return _.assign(todo, { completed: evt });
           });
           // Write the data back to the cache.
-          store.writeQuery({ query: TodosListQuery, data });
+          store.writeQuery({ query: queries.TodosListQuery, data });
         },
       });
     },
@@ -110,4 +91,4 @@ const withToggleAllTodo = graphql(ToggleAllTodoMutation, {
 });
 
 
-export default withClearCompleted(withToggleAllTodo(ActionTodos));
+export default compose(withClearCompleted, withToggleAllTodo)(ActionTodos);

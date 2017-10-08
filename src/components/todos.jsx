@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { gql, graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { Card } from 'react-md/lib/Cards';
 import { List, ListItemControl } from 'react-md/lib/Lists';
@@ -7,6 +7,8 @@ import Checkbox from 'react-md/lib/SelectionControls/Checkbox';
 import FontIcon from 'react-md/lib/FontIcons';
 import _ from 'lodash';
 import Modal from './edit_todo';
+import queries from '../queries/todos';
+import mutations from '../mutations/todos';
 
 class Todos extends Component {
   static propTypes = {
@@ -76,42 +78,14 @@ class Todos extends Component {
   }
 }
 
-export const TodosListQuery = gql`
-  query TodosListQuery {
-    todos {
-      id
-      title
-      completed
-    }
-  }
-`;
-
-const ToggleTodoMutation = gql`
-  mutation toggle($id: String!) {
-    toggle(id: $id) {
-      id
-      title
-      completed
-    }
-  }
-`;
-
-const DestroyTodoMutation = gql`
-  mutation destroy($id: String!) {
-    destroy(id: $id) {
-      id
-    }
-  }
-`;
-
-const withTodos = graphql(TodosListQuery, {
+const withTodos = graphql(queries.TodosListQuery, {
   options: { pollInterval: 5000 },
   props: ({ data }) => ({
     fetchData: data || {},
   }),
 });
 
-const withToggleTodo = graphql(ToggleTodoMutation, {
+const withToggleTodo = graphql(mutations.ToggleTodoMutation, {
   props: ({ mutate }) => ({
     toggleTodo: (evt) => {
       mutate({
@@ -126,7 +100,7 @@ const withToggleTodo = graphql(ToggleTodoMutation, {
         },
         update: (store, { data: { toggle } }) => {
           // Read the data from the cache for this query.
-          const data = store.readQuery({ query: TodosListQuery });
+          const data = store.readQuery({ query: queries.TodosListQuery });
           // Add our channel from the mutation to the end.
           const index = _.findIndex(data.todos, { id: toggle.id });
           const dataSelect = data.todos[index];
@@ -134,14 +108,14 @@ const withToggleTodo = graphql(ToggleTodoMutation, {
           dataSelect.completed = toggle.completed;
           data.todos.splice(index, 1, dataSelect);
           // Write the data back to the cache.
-          store.writeQuery({ query: TodosListQuery, data });
+          store.writeQuery({ query: queries.TodosListQuery, data });
         },
       });
     },
   }),
 });
 
-const withDestroyTodo = graphql(DestroyTodoMutation, {
+const withDestroyTodo = graphql(mutations.DestroyTodoMutation, {
   props: ({ mutate }) => ({
     destroyTodo: (evt) => {
       mutate({
@@ -154,17 +128,16 @@ const withDestroyTodo = graphql(DestroyTodoMutation, {
         },
         update: (store, { data: { destroy } }) => {
           // Read the data from the cache for this query.
-          const data = store.readQuery({ query: TodosListQuery });
+          const data = store.readQuery({ query: queries.TodosListQuery });
           // Add our channel from the mutation to the end.
           const index = _.findIndex(data.todos, { id: destroy.id });
           data.todos.splice(index, 1);
           // Write the data back to the cache.
-          store.writeQuery({ query: TodosListQuery, data });
+          store.writeQuery({ query: queries.TodosListQuery, data });
         },
       });
     },
   }),
 });
 
-
-export default withTodos(withToggleTodo(withDestroyTodo(Todos)));
+export default compose(withTodos, withToggleTodo, withDestroyTodo)(Todos);
