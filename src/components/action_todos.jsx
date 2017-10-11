@@ -26,7 +26,7 @@ class ActionTodos extends Component {
 
   render() {
     return (
-      <div className="md-cell md-cell--12" style={{ textAlign: 'right' }}>
+      <div className="md-cell md-cell--12">
         <MenuButton
           id="menu-button-1"
           flat

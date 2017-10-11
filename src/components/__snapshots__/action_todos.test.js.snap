@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`shallow action_todos renders without crashing 1`] = `
+exports[`<ActionTodos /> shallow action_todos renders without crashing 1`] = `
 <Apollo(ActionTodos)
   clearCompleted={[Function]}
 />
